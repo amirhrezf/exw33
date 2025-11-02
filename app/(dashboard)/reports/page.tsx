@@ -116,7 +116,7 @@ export default function ReportsPage() {
     try {
       const result = await getTransactionsByDateRange(startDate, endDate)
       if (result.success) {
-        const convertedTransactions = result.transactions.map(t => ({
+        const convertedTransactions = result.transactions.map((t: any) => ({
           ...t,
           date: new Date(t.date),
           createdAt: new Date(t.createdAt),
@@ -355,13 +355,16 @@ export default function ReportsPage() {
                   <ChartContainer config={chartConfig} className="h-[300px]">
                     <RechartsPieChart>
                       <ChartTooltip content={<ChartTooltipContent nameKey="category" />} />
-                      <ChartLegend content={<ChartLegendContent nameKey="category" />} />
+                      <ChartLegend content={<ChartLegendContent nameKey="category" payload={[]} />} />
                       <Pie
                         data={categoryData}
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        label={({ label, percent }) => percent > 0.05 ? `${label} ${(percent * 100).toFixed(0)}%` : ''}
+                        label={(props: any) => {
+                          const { percent } = props;
+                          return percent > 0.05 ? `${(percent * 100).toFixed(0)}%` : '';
+                        }}
                         outerRadius={80}
                         fill="#8884d8"
                         dataKey="value"
