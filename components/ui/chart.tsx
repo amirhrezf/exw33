@@ -178,12 +178,17 @@ const ChartTooltipContent = React.forwardRef<
                             indicator === "dashed" && "border-t border-dashed"
                           )}
                         >
-                          {!hideIndicator && indicator === "dot" ? (
+                          {!hideIndicator && indicator === "line" ? (
                             <div
-                              className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
+                              className="h-0.5 w-3 shrink-0 rounded-[2px]"
                               style={{
                                 backgroundColor: indicatorColor,
                               }}
+                            />
+                          ) : null}
+                          {!hideIndicator && indicator === "dashed" ? (
+                            <div
+                              className="h-px w-4 shrink-0 border-t border-dashed border-current"
                             />
                           ) : null}
                           <span
