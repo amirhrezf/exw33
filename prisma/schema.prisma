@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // This is the connection URL from NeonDB
+  url = env("DATABASE_URL")
+  // Use connection pooling with NeonDB
+  directUrl = env("DIRECT_DATABASE_URL")
+}
+
+// Model for user authentication and settings
+model User {
+  // We use a 'string' ID because auth providers (like Clerk) use strings
+  // No default - we provide the ID from Clerk
+  id String @id
+  email String @unique
+  name String? // Optional, for first/last name
+
+  // User's chosen currency (e.g., "USD", "EUR", "GBP")
+  // We store the code, not the symbol.
+  currency String @default("USD")
+
+  // This creates the one-to-many relationship
+  // One User can have many Transactions
+  transactions Transaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// This model stores every single expense record
+model Transaction {
+  id String @id @default(cuid())
+  name String // "Coffee", "Bus ticket", etc.
+
+  // Use 'Decimal' for money. 'Float' causes rounding errors.
+  amount Decimal
+
+  // The category from our defined list
+  category Category
+
+  // The date the user picked, not just when it was created
+  date DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // This is the "foreign key" that links this transaction to a User
+  userId String
+  // This defines the relation object
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Creates an index on userId for faster queries
+  @@index([userId])
+}
+
+// This 'enum' enforces that the 'category' field
+// can ONLY be one of these specific values.
+enum Category {
+  Food
+  Groceries
+  Transportation
+  Internet
+  Health
+  Sport
+  Shopping
+  Entertainment
+  BadHabits
+  Other // It's good practice to have a fallback
+}
