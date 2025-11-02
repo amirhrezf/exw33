@@ -198,7 +198,7 @@ const ChartTooltipContent = React.forwardRef<
                             )}
                           >
                             {typeof formatter === "function" && item.value !== undefined && item.name
-                              ? formatter(item.value, item.name)
+                              ? formatter(item.value, item.name, item, index, item.payload)
                               : item.value?.toLocaleString()}
                           </span>
                         </div>
@@ -240,7 +240,7 @@ const ChartTooltipContent = React.forwardRef<
                           )}
                         >
                           {typeof formatter === "function" && item.value !== undefined && item.name
-                            ? formatter(item.value, item.name)
+                            ? formatter(item.value, item.name, item, index, item.payload)
                             : item.value?.toLocaleString()}
                         </span>
                       </>
